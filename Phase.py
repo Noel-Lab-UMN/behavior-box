@@ -530,27 +530,12 @@ fig.savefig(plot_path, dpi=300, bbox_inches="tight")
 print(f"Plot saved to {plot_path}")
 
 #Final update for data record file
-# prepare lag string (bracketed, semicolon-separated to avoid CSV quoting)
-def list_to_semibracket_str(lst):
-    # ensure list of numbers -> "[-0.5; 0; 0.5]"
-    try:
-        return "[" + ", ".join(str(float(x)) for x in lst) + "]"
-    except Exception:
-        # fallback: simple string conversion with semicolons removed if needed
-        s = str(lst)
-        s = s.replace(",", ",")
-        return s
-
 trial_already += actual_trial
-
-lag_str = list_to_semibracket_str(lagList)
-
 if callForStop == False or (callForStop == True and trialWhenBreak > 30):
     # Add new row with actual session info
     if actual_trial < 2 * numTrial:
-        nextLag_str = list_to_semibracket_str(lagList)
         # If the behavior ends because of behavior is not ideal, update immediately as bad performance
-        newRow = [session_already + 1, today_str, lag_str, 'bad', trial_already, nextLag_str, True]
+        newRow = [session_already + 1, today_str, lagList, 'bad', trial_already, lagList, True]
     else:
         data_path = full_path / "discontinuous.csv"
         time_lag = []
@@ -623,7 +608,6 @@ if callForStop == False or (callForStop == True and trialWhenBreak > 30):
             print(f"Data file not found: {data_path}")
             nextLag = list(lagList)
 
-        nextLag_str = list_to_semibracket_str(nextLag)
         newRow = [session_already + 1, today_str, lagList, performance, trial_already, nextLag, True]
 else:
     print("quit")
